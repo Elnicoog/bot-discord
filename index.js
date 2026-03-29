@@ -8,7 +8,7 @@ const client = new Client({
 
 const parser = new Parser();
 
-const TOKEN = process.env.DISCORD_BOT_TOKEN;
+const TOKEN = process.env.'DISCORD_BOT_TOKEN';
 const CHANNEL_ID = '1438720227260108810';
 const RSS_URL = 'https://rss.app/feeds/N0r9TCzjcAqdUBny.xml';
 const TIKTOK_USER = 'Felinoguias';
