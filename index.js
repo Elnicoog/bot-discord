@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, InteractionType } = require('discord.js');
 const Parser = require('rss-parser');
 const { WebcastPushConnection } = require('tiktok-live-connector');
 
@@ -15,7 +15,43 @@ const TIKTOK_USER = 'Felinoguias';
 
 let ultimoVideo = null;
 
+const commands = [
+  new SlashCommandBuilder()
+    .setName('apostar')
+    .setDescription('Apuesta en un lanzamiento de moneda')
+    .addNumberOption(option =>
+      option
+        .setName('cantidad')
+        .setDescription('Cantidad a apostar')
+        .setRequired(true)
+        .setMinValue(1)
+    )
+    .addStringOption(option =>
+      option
+        .setName('opcion')
+        .setDescription('Elige cara o sello')
+        .setRequired(true)
+        .addChoices(
+          { name: 'Cara', value: 'cara' },
+          { name: 'Sello', value: 'sello' }
+        )
+    )
+    .toJSON()
+];
+
+async function registerCommands(clientId) {
+  const rest = new REST({ version: '10' }).setToken(TOKEN);
+  try {
+    await rest.put(Routes.applicationCommands(clientId), { body: commands });
+    console.log('Slash commands registrados correctamente.');
+  } catch (error) {
+    console.error('Error al registrar slash commands:', error);
+  }
+}
+
 client.once('ready', async () => {
+  await registerCommands(client.user.id);
+
   const canal = await client.channels.fetch(CHANNEL_ID);
 
   const tiktokLive = new WebcastPushConnection(TIKTOK_USER);
@@ -36,6 +72,25 @@ client.once('ready', async () => {
 
     canal.send(`@everyone 📢 Nuevo TikTok:\n${video.link}`);
   }, 300000);
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (interaction.type !== InteractionType.ApplicationCommand) return;
+
+  if (interaction.commandName === 'apostar') {
+    const cantidad = interaction.options.getNumber('cantidad');
+    const opcion = interaction.options.getString('opcion');
+
+    const resultado = Math.random() < 0.5 ? 'cara' : 'sello';
+    const gano = opcion === resultado;
+
+    const emoji = resultado === 'cara' ? '🪙' : '🔘';
+    const mensaje = gano
+      ? `${emoji} ¡Salió **${resultado}**! Apostaste **${opcion}** — ¡Ganaste **${cantidad}** monedas! 🎉`
+      : `${emoji} ¡Salió **${resultado}**! Apostaste **${opcion}** — Perdiste **${cantidad}** monedas. 😔`;
+
+    await interaction.reply(mensaje);
+  }
 });
 
 client.login(TOKEN);
