@@ -21,8 +21,8 @@ let ultimoVideo = null;
 
 const commands = [
   {
-    name: 'ping',
-    description: 'Responde pong'
+    name: 'Hola',
+    description: 'Responde Baboso'
   }
 ];
 
