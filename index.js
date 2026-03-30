@@ -15,7 +15,9 @@ const TIKTOK_USER = 'Felinoguias';
 
 let ultimoVideo = null;
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
+  console.log(`Bot listo como ${client.user.tag}`);
+
   const canal = await client.channels.fetch(CHANNEL_ID);
 
   const tiktokLive = new WebcastPushConnection(TIKTOK_USER);
