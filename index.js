@@ -44,7 +44,7 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 })();
 
 
-client.once('clientReady', async () => {
+client.once('ready', async () => { 
   console.log(`Bot listo como ${client.user.tag}`);
 
   const canal = await client.channels.fetch(CHANNEL_ID);
