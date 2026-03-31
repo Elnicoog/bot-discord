@@ -2,15 +2,17 @@
   "name": "discord-bot",
   "version": "1.0.0",
   "description": "Discord Bot",
-  "main": "src/bot/index.ts",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --loader tsx src/bot/index.ts",
+    "start": "node --import tsx src/bot/index.ts",
     "dev": "tsx watch src/bot/index.ts"
   },
   "dependencies": {
     "discord.js": "^14.14.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "rss-parser": "^3.13.0",
+    "tiktok-live-connector": "^1.1.8"
   },
   "devDependencies": {
     "tsx": "^4.7.0",
